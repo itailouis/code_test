@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.core.util.PatternsCompat;
 import androidx.fragment.app.Fragment;
 
 import java.util.Timer;
@@ -106,11 +107,14 @@ public class Signup_fragment extends Fragment implements OnClickListener {
 		String getAge = age.getText().toString();
 
 		// Pattern match for email id
-		Pattern p = Pattern.compile(Utils.regEx);
-		Matcher m = p.matcher(getEmailId);
+		Pattern e = Pattern.compile(Utils.regEx);
+		Matcher m = e.matcher(getEmailId);
 
 		Pattern s = Pattern.compile(Utils.regExCell);
 		Matcher g = s.matcher(getMobileNumber);
+
+		Pattern u = Pattern.compile(Utils.regex);
+		Matcher U = u.matcher(getMobileNumber);
 
 		// Check if all strings are null or not
 		if (getFullName.equals("") || getFullName.length() == 0
@@ -123,15 +127,15 @@ public class Signup_fragment extends Fragment implements OnClickListener {
 			loginLayout.startAnimation(shakeAnimation);
 			new CustomToast().Show_Toast(getActivity(), view, "All fields are required.");
 
-			// Check if email id valid or not !m.find() ||
-		} else if ( !m.find()) {
+			// Check if email id valid or not !m.find() || Patterns.WEB_URL.matcher(linkUrl).matches()
+		} else if (PatternsCompat.EMAIL_ADDRESS.matcher(getEmailId).matches() ==false & PatternsCompat.WEB_URL.matcher(getEmailId).matches()==false) {
 			loginLayout.startAnimation(shakeAnimation);
-			new CustomToast().Show_Toast(getActivity(), view, "Email or URl  is Invalid.");
+			new CustomToast().Show_Toast(getActivity(), view, m.find()+"Email or URl  is Invalid." +PatternsCompat.WEB_URL.matcher(getEmailId).matches());
 
-		} else if (!g.find()) {
+		} else if (!g.find() ) {
 			loginLayout.startAnimation(shakeAnimation);
 
-			new CustomToast().Show_Toast(getActivity(), view, "Cell Number is Invalid." +getMobileNumber);
+			new CustomToast().Show_Toast(getActivity(), view, "Cell Number is Invalid." );
 
 		} else if (Integer.parseInt(getAge) <= 17) {
 			loginLayout.startAnimation(shakeAnimation);
@@ -143,7 +147,7 @@ public class Signup_fragment extends Fragment implements OnClickListener {
 
 		new CustomToast().Show_Toast(getActivity(), view, "Please select Terms and Conditions.");
 
-		// Else do signup or do your stuff
+
 	}else{
 
 		createUser(getFullName, getEmailId, getMobileNumber, getAge);
